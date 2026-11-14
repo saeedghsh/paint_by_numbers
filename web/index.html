@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Turn any picture into a printable paint-by-numbers page tuned to the painter's age. Runs in your browser with Python."
+    />
+    <title>Paint by Numbers</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./app.js" type="module"></script>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="hero">
+        <p class="eyebrow">Python in your browser · your pictures never leave this device</p>
+        <h1>Paint by Numbers</h1>
+        <p class="lede">
+          Turn any picture into a printable paint-by-numbers page — with huge areas and colour
+          dots for toddlers, numbered crayon pages for school kids, and fine detail for adults.
+        </p>
+      </header>
+
+      <section id="loading" class="notice" role="status" aria-live="polite">
+        <span class="spinner" aria-hidden="true"></span>
+        <span id="loading-text">Starting the Python engine…</span>
+      </section>
+
+      <section id="fatal" class="notice error" role="alert" hidden>
+        <div>
+          <h2>The app could not start</h2>
+          <p id="fatal-text"></p>
+          <button type="button" class="button" onclick="window.location.reload()">Try again</button>
+        </div>
+      </section>
+
+      <div id="app" class="workspace" hidden>
+        <aside class="panel" aria-label="Settings">
+          <section class="step">
+            <h2><span class="step-number">1</span> Pick a picture</h2>
+            <label id="dropzone" class="dropzone">
+              <input id="file" type="file" accept="image/*" />
+              <img id="original-thumb" alt="" hidden />
+              <span id="drop-text"><strong>Choose a photo</strong> or drop it here</span>
+            </label>
+            <button id="sample" type="button" class="link-button">…or try the sample picture</button>
+          </section>
+
+          <section class="step">
+            <h2><span class="step-number">2</span> Who is painting?</h2>
+            <div id="profiles" class="profiles" role="radiogroup" aria-label="Painter's age"></div>
+          </section>
+
+          <section class="step">
+            <h2><span class="step-number">3</span> Choose a style</h2>
+            <div id="styles" class="chips" role="radiogroup" aria-label="Artistic style"></div>
+          </section>
+
+          <details class="step fine-tune">
+            <summary>Fine-tune</summary>
+            <div id="controls" class="controls"></div>
+            <button id="reset" type="button" class="link-button">Back to the age preset</button>
+          </details>
+        </aside>
+
+        <section class="results" aria-live="polite">
+          <div id="empty" class="empty">
+            <div class="empty-art" aria-hidden="true">
+              <span style="--c: #f28b6b">1</span><span style="--c: #f6c85f">2</span
+              ><span style="--c: #6fb7a8">3</span><span style="--c: #6c8fd8">4</span>
+            </div>
+            <p>Pick a picture to make your first page.</p>
+          </div>
+
+          <div id="output" hidden>
+            <div class="result-head">
+              <div id="tabs" class="tabs" role="tablist">
+                <button role="tab" data-view="page" aria-selected="true">Page</button>
+                <button role="tab" data-view="preview" aria-selected="false">Finished look</button>
+                <button role="tab" data-view="styled" aria-selected="false">Restyled</button>
+                <button role="tab" data-view="original" aria-selected="false">Original</button>
+              </div>
+              <div id="busy" class="busy" hidden>
+                <span class="spinner small" aria-hidden="true"></span><span id="busy-text">Working…</span>
+              </div>
+            </div>
+            <figure class="viewer">
+              <img id="view" alt="The paint-by-numbers page" />
+            </figure>
+            <p id="difficulty" class="difficulty"></p>
+            <p id="warnings" class="warnings" hidden></p>
+
+            <div class="downloads">
+              <button id="download-pdf" type="button" class="button">Printable PDF</button>
+              <button id="print" type="button" class="button secondary">Print</button>
+              <button data-download="page" type="button" class="button secondary">Page PNG</button>
+              <button data-download="preview" type="button" class="button secondary">Preview PNG</button>
+              <button data-download="key" type="button" class="button secondary">Colour key PNG</button>
+            </div>
+
+            <section class="key">
+              <h2>Colour key</h2>
+              <ol id="legend" class="legend"></ol>
+            </section>
+
+            <section id="tips-box" class="tips" hidden>
+              <h2>Tips for this age</h2>
+              <ul id="tips"></ul>
+            </section>
+          </div>
+          <p id="error" class="error-text" role="alert" hidden></p>
+        </section>
+      </div>
+
+      <footer>
+        Made with Python (NumPy + Pillow) running locally through
+        <a href="https://pyodide.org/">Pyodide</a>. Also available as a command-line tool —
+        <a href="https://github.com/saeedghsh/paint_by_numbers">source on GitHub</a>.
+      </footer>
+    </main>
+
+    <div class="print-area" aria-hidden="true">
+      <img id="print-page" alt="" />
+      <img id="print-key" alt="" />
+    </div>
+  </body>
+</html>

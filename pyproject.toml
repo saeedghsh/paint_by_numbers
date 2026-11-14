@@ -1,0 +1,104 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "paint-by-numbers"
+version = "0.1.0"
+description = "Turn any picture into an age-appropriate paint-by-numbers page, in the terminal or the browser"
+readme = "README.md"
+license = "GPL-3.0-only"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.2.5,<3",
+    "pillow>=11.3,<13",
+]
+
+[project.scripts]
+paint-by-numbers = "paint_by_numbers.cli:main"
+
+[dependency-groups]
+dev = [
+    "packaging>=24",
+    "pytest>=8,<10",
+    "pytest-cov>=6,<8",
+    "black>=25",
+    "mypy>=1.15",
+    "pylint>=3.3",
+]
+browser = ["playwright>=1.55,<2"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# Versions loaded by the static site. Pyodide 0.28.3 ships these exact builds;
+# the page refuses to start if the loaded runtime differs.
+[tool.paint-by-numbers.browser]
+pyodide-version = "0.28.3"
+python-version = "3.13"
+numpy-version = "2.2.5"
+pillow-version = "11.3.0"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-v --cov=src --cov-report=term-missing"
+python_files = ["test_*.py"]
+markers = ["browser: real-browser tests that download Pyodide from its CDN"]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+[tool.coverage.run]
+omit = ["*/tests/*"]
+
+[tool.pylint]
+init-hook = "import os, sys; sys.path.append(os.getcwd())"
+max-line-length = 100
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = [
+    "locally-disabled",
+    "suppressed-message",
+    "duplicate-code",
+    "too-many-arguments",
+    "too-many-positional-arguments",
+    "too-many-locals",
+    "too-many-instance-attributes",
+]
+
+[tool.pylint.basic]
+good-names = ["i", "j", "k", "x", "y", "z", "h", "w", "n", "r", "g", "b"]
+
+[tool.black]
+line-length = 100
+target-version = ['py312']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+    | \.git
+    | \.mypy_cache
+    | \.venv
+    | _site
+    | build
+    | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.mypy]
+exclude = '^(_site|build|extras|temp)/'
+ignore_missing_imports = true
+explicit_package_bases = true
+mypy_path = "src"
+strict = true
+warn_unused_ignores = false
+warn_return_any = true
+disable_error_code = [
+    "type-arg", # Missing type parameters for generic type 'ndarray'
+]
+show_error_codes = true
